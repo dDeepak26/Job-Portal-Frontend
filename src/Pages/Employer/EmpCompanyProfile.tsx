@@ -33,49 +33,18 @@ const EmpCompanyProfile = () => {
     useState<CompanyProfileType>();
   const [opened, { open, close }] = useDisclosure(false);
 
-  // create company profile and store it in state
-  async function handleCreateCompanyProfile(values: CompanyProfileType) {
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/api/company-profile/",
-        values,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log(
-        "response from create company profile api ",
-        response.data.companyProfile
-      );
-      setCompanyProfileData(response.data.companyProfile);
-      localStorage.setItem(
-        SESSION_KEY_COMPANY_PROFILE,
-        response.data.companyProfile
-      );
-    } catch (error) {
-      console.error("Error in creating company profile (catch) client ", error);
-    }
-  }
-
   // update company profile
-  function handleUpdateCompanyProfile(values: CompanyProfileType) {
+  function handleCreateUpdateCompanyProfile(values: CompanyProfileType) {
     axios
-      .put(
-        `http://localhost:8080/api/company-profile/${companyProfileData?.employerId}`,
-        values,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      .put(`http://localhost:8080/api/company-profile`, values, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         console.log("company profile updated with data ", response);
-        getCompanyProfile();
+        setCompanyProfileData(response.data.updatedCompanyProfile);
       })
       .catch((error) => {
         console.error("Error in updating the company profile ", error);
@@ -88,7 +57,7 @@ const EmpCompanyProfile = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/company-profile/${userObj?._id}`,
+        `http://localhost:8080/api/company-profile`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -144,7 +113,7 @@ const EmpCompanyProfile = () => {
       <Modal
         opened={opened}
         onClose={close}
-        title="Edit Company Profile"
+        title="Update Company Profile"
         centered
       >
         {/* Modal content */}
@@ -152,14 +121,8 @@ const EmpCompanyProfile = () => {
           // on update function logic
           onSubmit={form.onSubmit((values) => {
             console.log(values);
-            // calling api based on create or update
-            if (companyProfileData) {
-              console.log("update company profile called with data ", values);
-              handleUpdateCompanyProfile(values);
-            } else {
-              console.log("Create company profile called with data ", values);
-              handleCreateCompanyProfile(values);
-            }
+            // calling api
+            handleCreateUpdateCompanyProfile(values);
             close();
           })}
           className="space-y-2"
@@ -186,12 +149,8 @@ const EmpCompanyProfile = () => {
             key={form.key("companyImage")}
             {...form.getInputProps("companyImage")}
           />
-          <Button
-            color={companyProfileData ? "yellow" : "green"}
-            type="submit"
-            fullWidth
-          >
-            {companyProfileData ? "Update" : "Create"}
+          <Button color="yellow" type="submit" fullWidth>
+            Update
           </Button>
         </form>
       </Modal>
@@ -223,15 +182,9 @@ const EmpCompanyProfile = () => {
               <Text size="lg" fw={600} mb="sm">
                 Company Details
               </Text>
-              {companyProfileData ? (
-                <Button variant="light" color="yellow" onClick={open}>
-                  Edit
-                </Button>
-              ) : (
-                <Button variant="light" color="green" onClick={open}>
-                  Create
-                </Button>
-              )}
+              <Button variant="light" color="yellow" onClick={open}>
+                Update
+              </Button>
             </Group>
 
             <Flex

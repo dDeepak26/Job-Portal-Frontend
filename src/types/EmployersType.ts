@@ -8,9 +8,3 @@ export type CompanyProfileType = {
   companyAbout: string;
   companyImage: string | null;
 };
-
-// enum for page navigation
-export enum PageStateEnum {
-  HOME = "HomePage",
-  PROFILE = "CompanyProfilePage",
-}

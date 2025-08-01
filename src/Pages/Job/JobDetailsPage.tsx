@@ -7,9 +7,11 @@ import { Avatar, Button, Flex, Group, Text, Title } from "@mantine/core";
 import { Briefcase, IndianRupee, MapPin, MoveLeft, Zap } from "lucide-react";
 import type { UserType } from "../../types/UserType";
 import {
+  SESSION_KEY_TOKEN,
   SESSION_KEY_UPDATE_JOB,
   SESSION_KEY_USER,
 } from "../../constants/sessionConstants";
+import AppNavbar from "../../components/Applicant/AppNavBar";
 
 const JobDetailsPage = () => {
   const { id } = useParams();
@@ -25,6 +27,7 @@ const JobDetailsPage = () => {
     }
   }
 
+  // function to get job details
   async function getJobDetails() {
     try {
       const jobDetailsData = await axios.get(
@@ -39,6 +42,27 @@ const JobDetailsPage = () => {
     }
   }
 
+  // function to apply to job only by applicant
+  function handleApplyToJob() {
+    const token = sessionStorage.getItem(SESSION_KEY_TOKEN);
+    axios
+      .put(
+        `http://localhost:8080/api/job/apply/${jobDetails?._id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        setJobDetails(response.data);
+      })
+      .catch((error) => {
+        console.error("Error in applying to job", error);
+      });
+  }
+
   console.log("state data of job details ", jobDetails);
 
   useEffect(() => {
@@ -48,8 +72,8 @@ const JobDetailsPage = () => {
 
   return (
     <div>
-      <EmpNavbar />
-      <Link to={"/employer"}>
+      {userData?.role === "employer" ? <EmpNavbar /> : <AppNavbar />}
+      <Link to={userData?.role === "employer" ? "/employer" : "/applicant"}>
         <Button
           variant="light"
           leftSection={<MoveLeft />}
@@ -83,11 +107,19 @@ const JobDetailsPage = () => {
                 </Text>
               </Flex>
             </Group>
-            {userData?.role === "applicant" && (
-              <Button variant="light" size="xs">
-                Apply Now
-              </Button>
-            )}
+            {/* apply button */}
+            {userData?.role === "applicant" &&
+              (jobDetails?.appliedApplicants?.filter(
+                (data) => data._id === userData._id
+              ) ? (
+                <Button color="green" variant="light" size="xs">
+                  Applied
+                </Button>
+              ) : (
+                <Button variant="light" size="xs" onClick={handleApplyToJob}>
+                  Apply
+                </Button>
+              ))}
           </Group>
 
           {/* location salary experience type */}

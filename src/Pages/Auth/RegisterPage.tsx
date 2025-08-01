@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import type { UserType } from "../../types/UserType";
 import axios from "axios";
 import { useState } from "react";
+import { IconCheck } from "@tabler/icons-react";
+import { notifications } from "@mantine/notifications";
 
 const RegisterPage = () => {
   const navigator = useNavigate();
@@ -41,10 +43,19 @@ const RegisterPage = () => {
         console.log(response);
         form.reset();
         navigator("/login", { replace: true });
+        notifications.show({
+          title: `Register`,
+          message: "Register Successful",
+          color: "green",
+          icon: <IconCheck size={18} />,
+          autoClose: 3000,
+        });
       })
       .catch((error) => {
         console.error("Error in register the user ", error);
-        if (error.response.data.errorMessage) {
+        if (error.response.data.errorMessage[0].message) {
+          setErrorMessage(error.response.data.errorMessage[0].message);
+        } else if (error.response.data.errorMessage) {
           setErrorMessage(error.response.data.errorMessage);
         }
       });

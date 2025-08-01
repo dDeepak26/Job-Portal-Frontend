@@ -1,3 +1,5 @@
+import type { applicantType } from "./UserType";
+
 export type jobType = {
   _id?: string;
   employerId?: string;
@@ -15,4 +17,5 @@ export type jobType = {
   jNoOpening: number | null;
   createdAt?: string;
   updatedAt?: string;
+  appliedApplicants?: applicantType[];
 };

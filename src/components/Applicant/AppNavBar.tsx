@@ -6,7 +6,7 @@ import { SESSION_KEY_USER } from "../../constants/sessionConstants";
 import { useEffect, useState } from "react";
 import type { UserType } from "../../types/UserType";
 
-const EmpNavbar = () => {
+const AppNavbar = () => {
   const navigator = useNavigate();
   const [user, setUser] = useState<UserType>();
 
@@ -32,7 +32,7 @@ const EmpNavbar = () => {
     <nav className="flex flex-row justify-between p-5">
       {/* logo */}
       <Link
-        to={"/employer"}
+        to={"/applicant"}
         className="flex flex-row text-2xl justify-center items-center font-bold cursor-pointer space-x-3"
       >
         <BriefcaseBusiness size={30} />
@@ -41,11 +41,11 @@ const EmpNavbar = () => {
 
       {/* create job, find talent/accept applicant */}
       <Group>
-        <Link to={"/create-job"}>
-          <Button variant="transparent">CREATE JOB</Button>
+        <Link to={"/applicant"}>
+          <Button variant="transparent">APPLIED JOBS</Button>
         </Link>
-        <Link to={"/find-talent"}>
-          <Button variant="transparent">FIND TALENT</Button>
+        <Link to={"/applicant"}>
+          <Button variant="transparent">SAVED JOBS</Button>
         </Link>
       </Group>
       <Menu shadow="md" width={200}>
@@ -58,7 +58,7 @@ const EmpNavbar = () => {
 
         <Menu.Dropdown>
           <Menu.Item leftSection={<IconUser size={14} />}>
-            <Link to={"/employer/company-profile"}>Company Profile</Link>
+            <Link to={"/applicant-profile"}>Profile</Link>
           </Menu.Item>
           <Menu.Item
             color="red"
@@ -73,4 +73,4 @@ const EmpNavbar = () => {
   );
 };
 
-export default EmpNavbar;
+export default AppNavbar;
