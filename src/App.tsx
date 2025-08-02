@@ -10,6 +10,8 @@ import CreateUpdateJobPage from "./Pages/Job/CreateUpdateJobPage";
 import { Notifications } from "@mantine/notifications";
 import ApplicantPage from "./Pages/Applicant/ApplicantPage";
 import ApplicantProfilePage from "./Pages/Applicant/ApplicantProfilePage";
+import AppliedJobsPage from "./Pages/Applicant/AppliedJobsPage";
+import SavedJobsPages from "./Pages/Applicant/SavedJobsPages";
 
 const App = () => {
   return (
@@ -26,6 +28,8 @@ const App = () => {
           {/* applicant routes */}
           <Route path="/applicant" element={<ApplicantPage />} />
           <Route path="/applicant-profile" element={<ApplicantProfilePage />} />
+          <Route path="/applied-jobs" element={<AppliedJobsPage />} />
+          <Route path="/saved-jobs" element={<SavedJobsPages />} />
 
           {/* employer routes */}
           <Route path="/employer" element={<EmployerPage />} />

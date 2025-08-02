@@ -41,10 +41,10 @@ const AppNavbar = () => {
 
       {/* create job, find talent/accept applicant */}
       <Group>
-        <Link to={"/applicant"}>
+        <Link to={"/applied-jobs"}>
           <Button variant="transparent">APPLIED JOBS</Button>
         </Link>
-        <Link to={"/applicant"}>
+        <Link to={"/saved-jobs"}>
           <Button variant="transparent">SAVED JOBS</Button>
         </Link>
       </Group>
