@@ -4,11 +4,11 @@ import { BriefcaseBusiness } from "lucide-react";
 import { IconLogout2, IconUser } from "@tabler/icons-react";
 import { SESSION_KEY_USER } from "../../constants/sessionConstants";
 import { useEffect, useState } from "react";
-import type { UserType } from "../../types/UserType";
+import type { applicantType } from "../../types/UserType";
 
 const AppNavbar = () => {
   const navigator = useNavigate();
-  const [user, setUser] = useState<UserType>();
+  const [user, setUser] = useState<applicantType>();
 
   useEffect(() => {
     const user = localStorage.getItem(SESSION_KEY_USER);
@@ -51,7 +51,7 @@ const AppNavbar = () => {
       <Menu shadow="md" width={200}>
         <Menu.Target>
           <Group justify="center" gap={"xs"} className={"cursor-pointer"}>
-            <Avatar size={"md"} />
+            <Avatar src={user?.aImage} size={"md"} />
             {user?.fullName}
           </Group>
         </Menu.Target>

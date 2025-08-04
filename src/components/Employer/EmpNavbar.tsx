@@ -1,14 +1,14 @@
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, Button, Group, Menu } from "@mantine/core";
 import { BriefcaseBusiness } from "lucide-react";
 import { IconLogout2, IconUser } from "@tabler/icons-react";
 import { SESSION_KEY_USER } from "../../constants/sessionConstants";
-import { useEffect, useState } from "react";
-import type { UserType } from "../../types/UserType";
+import type { CompanyProfileType } from "../../types/EmployersType";
 
 const EmpNavbar = () => {
   const navigator = useNavigate();
-  const [user, setUser] = useState<UserType>();
+  const [user, setUser] = useState<CompanyProfileType>();
 
   useEffect(() => {
     const user = localStorage.getItem(SESSION_KEY_USER);
@@ -44,15 +44,15 @@ const EmpNavbar = () => {
         <Link to={"/create-job"}>
           <Button variant="transparent">CREATE JOB</Button>
         </Link>
-        <Link to={"/find-talent"}>
+        <Link to={"/employer/find-talent"}>
           <Button variant="transparent">FIND TALENT</Button>
         </Link>
       </Group>
       <Menu shadow="md" width={200}>
         <Menu.Target>
           <Group justify="center" gap={"xs"} className={"cursor-pointer"}>
-            <Avatar size={"md"} />
-            {user?.fullName}
+            <Avatar src={user?.companyImage} size={"md"} />
+            {user?.companyName}
           </Group>
         </Menu.Target>
 

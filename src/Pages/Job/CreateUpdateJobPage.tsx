@@ -3,6 +3,7 @@ import {
   Flex,
   Group,
   NumberInput,
+  Select,
   Textarea,
   TextInput,
   Title,
@@ -17,13 +18,14 @@ import {
 } from "../../constants/sessionConstants";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconX } from "@tabler/icons-react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MoveLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const CreateUpdateJobPage = () => {
   const location = useLocation();
   console.log("location path", location.pathname);
+  const navigate = useNavigate();
 
   const [updateFormData, setUpdateFormData] = useState<jobType>();
   console.log("update for data ", updateFormData);
@@ -104,6 +106,7 @@ const CreateUpdateJobPage = () => {
           icon: <IconCheck size={18} />,
           autoClose: 3000,
         });
+        navigate("/employer", { replace: true });
       })
       .catch((error) => {
         console.error(
@@ -140,6 +143,8 @@ const CreateUpdateJobPage = () => {
           icon: <IconCheck size={18} />,
           autoClose: 3000,
         });
+        navigate("/employer", { replace: true });
+        localStorage.removeItem(SESSION_KEY_UPDATE_JOB);
       })
       .catch((error) => {
         console.error(
@@ -157,6 +162,7 @@ const CreateUpdateJobPage = () => {
       });
   }
 
+  // to set the update values to useState from local storage which is set on job detail page
   useEffect(() => {
     const updateData = localStorage.getItem(SESSION_KEY_UPDATE_JOB);
     if (updateData) {
@@ -166,9 +172,12 @@ const CreateUpdateJobPage = () => {
   }, []);
 
   return (
-    <div>
+    <div className="mb-10">
       <EmpNavbar />
-      <Link to={"/employer"}>
+      <Link
+        to={"/employer"}
+        onClick={() => localStorage.removeItem(SESSION_KEY_UPDATE_JOB)}
+      >
         <Button
           variant="light"
           leftSection={<MoveLeft />}
@@ -211,9 +220,10 @@ const CreateUpdateJobPage = () => {
               key={form.key("jRole")}
               {...form.getInputProps("jRole")}
             />
-            <TextInput
+            <Select
               withAsterisk
               label="Job Mode"
+              data={["Remote", "Hybrid", "On Site"]}
               placeholder="enter mode role"
               key={form.key("jMode")}
               {...form.getInputProps("jMode")}

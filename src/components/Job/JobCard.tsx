@@ -1,15 +1,42 @@
 import { Avatar, Button, Flex, Group, Text, Title } from "@mantine/core";
 import type { jobType } from "../../types/JobType";
 import { useNavigate } from "react-router-dom";
-import { IconBookmark, IconBookmarkFilled } from "@tabler/icons-react";
+import {
+  IconBookmark,
+  IconBookmarkFilled,
+  IconClock,
+} from "@tabler/icons-react";
 import axios from "axios";
 import {
   SESSION_KEY_TOKEN,
   SESSION_KEY_USER,
 } from "../../constants/sessionConstants";
 import { useEffect, useState } from "react";
+import { timeAgo } from "../../utils/timeAgo";
 
-const JobCard = ({ data }: { data: jobType }) => {
+const JobCard = ({
+  companyImage,
+  companyName,
+  jobId,
+  jRole,
+  jLocation,
+  jMode,
+  jResponsibility,
+  jSalary,
+  jStatus,
+  createdAt,
+}: {
+  companyImage: string | undefined | null;
+  companyName: string | undefined;
+  jobId: string | undefined;
+  jRole: string;
+  jLocation: string;
+  jMode: string;
+  jResponsibility: string;
+  jSalary: number | null;
+  jStatus?: "Applied" | "Accepted" | "Rejected";
+  createdAt?: string;
+}) => {
   const navigator = useNavigate();
   const token = sessionStorage.getItem(SESSION_KEY_TOKEN);
 
@@ -68,29 +95,25 @@ const JobCard = ({ data }: { data: jobType }) => {
       {/* image, role, name */}
       <Group justify="space-between">
         <Group>
-          <Avatar
-            src={data.employerId?.companyImage}
-            alt="Company Logo"
-            size={"md"}
-          />
+          <Avatar src={companyImage} alt="Company Logo" size={"md"} />
           <Flex direction={"column"}>
-            <Title order={5}>{data.jRole}</Title>
-            <Text size="sm">{data.employerId?.companyName}</Text>
+            <Title order={5}>{jRole}</Title>
+            <Text size="sm">{companyName}</Text>
           </Flex>
         </Group>
         {/* save job */}
         {userObj.role === "applicant" && (
           <Text
             onClick={() => {
-              console.log("bookmarked clicked with id ", data._id);
-              if (data?._id) {
-                handleSaveJob(data._id);
+              console.log("bookmarked clicked with id ", jobId);
+              if (jobId) {
+                handleSaveJob(jobId);
               }
             }}
             className={"cursor-pointer"}
           >
             {savedJobId.some(
-              (obj) => obj._id?.toString() === data?._id?.toString()
+              (obj) => obj._id?.toString() === jobId?.toString()
             ) ? (
               <IconBookmarkFilled />
             ) : (
@@ -102,27 +125,48 @@ const JobCard = ({ data }: { data: jobType }) => {
       {/* location and type */}
       <Group>
         <Text size="sm" c={"blue"} bg={"gray"} p={"4"} className={"rounded-md"}>
-          {data.jMode}
+          {jMode}
         </Text>
         <Text size="sm" c={"blue"} bg={"gray"} p={"4"} className={"rounded-md"}>
-          {data.jLocation}
+          {jLocation}
         </Text>
       </Group>
       {/* description */}
       <Text lineClamp={3} size="sm">
-        {data.jResponsibility}
+        {jResponsibility}
       </Text>
       {/* salary & time */}
       <Group justify="space-between" mt={"md"}>
-        <Text fw={700}>₹{data.jSalary}LPA</Text>
-        <Text size="sm">4 days remaining</Text>
+        <Text fw={700}>₹{jSalary}LPA</Text>
+        {createdAt && (
+          <Text size="sm" className={"flex flex-row"}>
+            <IconClock className={"mr-2"} />
+            {timeAgo(createdAt)}
+          </Text>
+        )}
       </Group>
+      {/* status */}
+      {jStatus && (
+        <Button
+          color={
+            jStatus === "Rejected"
+              ? "red"
+              : jStatus === "Accepted"
+              ? "green"
+              : "gray"
+          }
+          variant="light"
+          fullWidth
+        >
+          {jStatus}
+        </Button>
+      )}
       {/* view detail button */}
       <Button
         variant="light"
         fullWidth
         onClick={() => {
-          navigator(`/job-details/${data._id}`);
+          navigator(`/job-details/${jobId}`);
         }}
       >
         View Job

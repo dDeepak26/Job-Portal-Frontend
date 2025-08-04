@@ -12,6 +12,8 @@ import ApplicantPage from "./Pages/Applicant/ApplicantPage";
 import ApplicantProfilePage from "./Pages/Applicant/ApplicantProfilePage";
 import AppliedJobsPage from "./Pages/Applicant/AppliedJobsPage";
 import SavedJobsPages from "./Pages/Applicant/SavedJobsPages";
+import FindTalentPage from "./Pages/Employer/FindTalentPage";
+import EmpJobApplicantsPage from "./Pages/Employer/EmpJobApplicantsPage";
 
 const App = () => {
   return (
@@ -36,6 +38,11 @@ const App = () => {
           <Route
             path="/employer/company-profile"
             element={<EmpCompanyProfile />}
+          />
+          <Route path="/employer/find-talent" element={<FindTalentPage />} />
+          <Route
+            path="/employer/find-talent/applicants/:id"
+            element={<EmpJobApplicantsPage />}
           />
 
           {/* jobs routes */}

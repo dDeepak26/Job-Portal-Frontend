@@ -123,7 +123,6 @@ const LoginPage = () => {
                     withAsterisk
                     label="Enter Password"
                     placeholder="********"
-                    type="password"
                     key={form.key("password")}
                     {...form.getInputProps("password")}
                   />

@@ -32,11 +32,11 @@ const JobDetailsPage = () => {
   const [jobDetails, setJobDetails] = useState<jobType>();
   const [userData, setUserData] = useState<UserType>();
   const [jobStatus, setJobStatus] = useState<
-    "Applied" | "Reviewing" | "Interview" | "Rejected" | "Hired"
+    "Applied" | "Rejected" | "Accepted"
   >();
   console.log("state data of job details ", jobDetails);
 
-  // get user data
+  // get user data from local storage
   async function getUserData() {
     const user = localStorage.getItem(SESSION_KEY_USER);
     console.log("user data", user);
@@ -84,6 +84,27 @@ const JobDetailsPage = () => {
       });
   }
 
+  // get applied job details
+  async function getAppliedJobStatusByJobId() {
+    try {
+      const jobData = await axios.get(
+        `http://localhost:8080/api/application/status/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!jobData) {
+        console.error("error no data found");
+      }
+      setJobStatus(jobData.data?.status);
+      // console.log("status for the job", jobData.data);
+    } catch (error) {
+      console.error("Error in getting the applied job status", error);
+    }
+  }
+
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -94,6 +115,7 @@ const JobDetailsPage = () => {
   useEffect(() => {
     getJobDetails();
     getUserData();
+    getAppliedJobStatusByJobId();
   }, []);
 
   return (
@@ -126,7 +148,7 @@ const JobDetailsPage = () => {
       </Modal>
 
       {/* main */}
-      <div>
+      <div className="mb-10">
         {userData?.role === "employer" ? <EmpNavbar /> : <AppNavbar />}
         <Link to={userData?.role === "employer" ? "/employer" : "/applicant"}>
           <Button

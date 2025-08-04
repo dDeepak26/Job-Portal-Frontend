@@ -7,3 +7,5 @@ export const SESSION_KEY_COMPANY_PROFILE = "CompanyProfile";
 export const SESSION_KEY_UPDATE_JOB = "UpdateJob";
 
 export const SESSION_KEY_APPLIED_JOBS = "Applied Jobs";
+
+export const SESSION_KEY_EMPLOYERS_JOBS = "Employer Jobs";

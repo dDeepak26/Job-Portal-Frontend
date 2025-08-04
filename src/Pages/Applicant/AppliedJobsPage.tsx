@@ -14,11 +14,6 @@ const AppliedJobsPage = () => {
   const [appliedJobs, setAppliedJobs] = useState<ApplicationType[]>([]);
 
   console.log("state data applied jobs", appliedJobs);
-  // if (appliedJobs) {
-  //   const first = appliedJobs[0];
-  //   const obj = { ...first, ...first.jobId };
-  //   console.log("passed object", obj);
-  // }
 
   // get jobs data
   function getAppliedJobs() {
@@ -48,7 +43,18 @@ const AppliedJobsPage = () => {
       <SimpleGrid cols={4} p={"md"}>
         {appliedJobs.map((data, index) => (
           <React.Fragment key={index}>
-            <JobCard data={{ ...data.jobId, ...data }} />
+            <JobCard
+              companyImage={data.employerId?.companyImage}
+              companyName={data.employerId?.companyName}
+              jobId={data.jobId?._id}
+              jRole={data.jobId?.jRole}
+              jLocation={data.jobId?.jLocation}
+              jMode={data.jobId?.jMode}
+              jResponsibility={data.jobId?.jResponsibility}
+              jSalary={data.jobId?.jSalary}
+              jStatus={data.status}
+              createdAt={data.jobId?.createdAt}
+            />
           </React.Fragment>
         ))}
       </SimpleGrid>

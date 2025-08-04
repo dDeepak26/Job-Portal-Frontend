@@ -9,9 +9,6 @@ export type jobType = {
     companyAbout?: string;
     companyImage?: string | null;
   };
-  companyName?: string;
-  companyAbout?: string;
-  companyImage?: string;
   jRole: string;
   jMode: string;
   jSalary: number | null;

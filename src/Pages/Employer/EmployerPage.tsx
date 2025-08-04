@@ -1,9 +1,12 @@
-import { Flex, Group, SimpleGrid } from "@mantine/core";
+import { Flex, SimpleGrid } from "@mantine/core";
 import EmpNavbar from "../../components/Employer/EmpNavbar";
 import React, { useEffect, useState } from "react";
 import type { jobType } from "../../types/JobType";
 import axios from "axios";
-import { SESSION_KEY_TOKEN } from "../../constants/sessionConstants";
+import {
+  SESSION_KEY_EMPLOYERS_JOBS,
+  SESSION_KEY_TOKEN,
+} from "../../constants/sessionConstants";
 import JobCard from "../../components/Job/JobCard";
 
 const EmployerPage = () => {
@@ -25,6 +28,10 @@ const EmployerPage = () => {
       if (jobDataDb) {
         console.log("job data from db ", jobDataDb);
         setJobsData(jobDataDb.data);
+        localStorage.setItem(
+          SESSION_KEY_EMPLOYERS_JOBS,
+          JSON.stringify(jobDataDb.data)
+        );
       }
     } catch (error) {
       console.error("Error in getting job data ", error);
@@ -40,11 +47,20 @@ const EmployerPage = () => {
     <div>
       <EmpNavbar />
       <Flex gap={"xl"} direction={"column"} justify="center">
-        <Group>Filter</Group>
         <SimpleGrid cols={4} p={"md"}>
           {jobsData.map((data, index) => (
             <React.Fragment key={index}>
-              <JobCard data={data} />
+              <JobCard
+                companyImage={data.employerId?.companyImage}
+                companyName={data.employerId?.companyName}
+                jobId={data._id}
+                jRole={data.jRole}
+                jLocation={data.jLocation}
+                jMode={data.jMode}
+                jResponsibility={data.jResponsibility}
+                jSalary={data.jSalary}
+                createdAt={data.createdAt}
+              />
             </React.Fragment>
           ))}
         </SimpleGrid>

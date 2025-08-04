@@ -32,7 +32,17 @@ const ApplicantPage = () => {
       <SimpleGrid cols={4} p={"md"}>
         {jobs.map((data, index) => (
           <React.Fragment key={index}>
-            <JobCard data={data} />
+            <JobCard
+              companyImage={data.employerId?.companyImage}
+              companyName={data.employerId?.companyName}
+              jobId={data._id}
+              jRole={data.jRole}
+              jLocation={data.jLocation}
+              jMode={data.jMode}
+              jResponsibility={data.jResponsibility}
+              jSalary={data.jSalary}
+              createdAt={data.createdAt}
+            />
           </React.Fragment>
         ))}
       </SimpleGrid>
