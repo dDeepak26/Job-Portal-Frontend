@@ -61,7 +61,6 @@ const JobCard = ({
         }
       )
       .then((res) => {
-        console.log(res.data);
         getSavedJobsList();
       })
       .catch((err) => {
@@ -78,7 +77,6 @@ const JobCard = ({
         },
       })
       .then((res) => {
-        console.log("saved jobs lists", res.data.savedJobs);
         setSavedJobId(res.data.savedJobs);
       })
       .catch((err) => console.error("error in getting saved jobs", err));
@@ -105,7 +103,6 @@ const JobCard = ({
         {userObj.role === "applicant" && (
           <Text
             onClick={() => {
-              console.log("bookmarked clicked with id ", jobId);
               if (jobId) {
                 handleSaveJob(jobId);
               }

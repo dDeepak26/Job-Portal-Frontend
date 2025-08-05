@@ -23,6 +23,8 @@ import {
 import AppNavbar from "../../components/Applicant/AppNavBar";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+import { IconX } from "@tabler/icons-react";
 
 const JobDetailsPage = () => {
   const { id } = useParams();
@@ -81,6 +83,13 @@ const JobDetailsPage = () => {
       })
       .catch((error) => {
         console.error("Error in applying to job", error);
+        notifications.show({
+          title: `Error in Applying`,
+          message: `${error.response.data.errorMessage}`,
+          color: "red",
+          icon: <IconX size={18} />,
+          autoClose: 3000,
+        });
       });
   }
 

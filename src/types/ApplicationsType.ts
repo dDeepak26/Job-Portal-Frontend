@@ -12,3 +12,16 @@ export type ApplicationType = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type ApplicationTypeForTalents = {
+  _id?: string;
+  jobId: jobType;
+  applicantId: applicantType;
+  employerId: CompanyProfileType;
+  status: "Applied" | "Accepted" | "Rejected";
+  resumeUrl: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ApplicationTypeArray = ApplicationTypeForTalents[];
