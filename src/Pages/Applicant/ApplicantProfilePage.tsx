@@ -13,14 +13,28 @@ import AppNavbar from "../../components/Applicant/AppNavBar";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
-import { SESSION_KEY_TOKEN } from "../../constants/sessionConstants";
+import {
+  SESSION_KEY_TOKEN,
+  SESSION_KEY_USER,
+} from "../../constants/sessionConstants";
 import type { applicantType } from "../../types/UserType";
 import { useEffect, useState } from "react";
+import { pdf, PDFViewer } from "@react-pdf/renderer";
+import { MyDocument } from "../../components/Resume/MyDocument";
+import {
+  IconCheck,
+  IconDownload,
+  IconEye,
+  IconEyeOff,
+  IconFileDownload,
+} from "@tabler/icons-react";
+import { notifications } from "@mantine/notifications";
 
 const ApplicantProfilePage = () => {
   const token = sessionStorage.getItem(SESSION_KEY_TOKEN);
   const [opened, { open, close }] = useDisclosure(false);
   const [profile, setProfile] = useState<applicantType>();
+  const [resumeState, setResumeState] = useState<boolean>(false);
 
   // create profile
   function handleCreateUpdateProfile(values: applicantType) {
@@ -58,6 +72,7 @@ const ApplicantProfilePage = () => {
         console.log("profile data from api call", profileData.data);
         form.setValues(profileData.data);
       }
+      localStorage.setItem(SESSION_KEY_USER, JSON.stringify(profileData.data));
     } catch (error) {
       console.error("Error in getting the profile", error);
     }
@@ -102,6 +117,58 @@ const ApplicantProfilePage = () => {
           : "Invalid aSkills format",
     },
   });
+
+  // handle save resume
+  const handleSaveResume = async () => {
+    try {
+      console.log("saved resume called");
+
+      const pdfBlob = await pdf(<MyDocument data={profile} />).toBlob();
+
+      // Create FormData and append PDF file
+      const formData = new FormData();
+      formData.append("file", pdfBlob, `${profile?.fullName || "resume"}.pdf`);
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      // Sending formdata directly
+      const res = await axios.put(
+        "http://localhost:8080/api/applicant-profile/resume",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("resume saved", res.data);
+      getProfile();
+      notifications.show({
+        title: `Resume saved`,
+        message: "Resume saved Successful",
+        color: "green",
+        icon: <IconCheck size={18} />,
+        autoClose: 3000,
+      });
+    } catch (err) {
+      console.error("error in saving resume", err);
+    }
+  };
+
+  // handle download
+  const handleDownload = async () => {
+    const blob = await pdf(<MyDocument data={profile} />).toBlob();
+    const url = URL.createObjectURL(blob);
+
+    // to save it locally
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${profile?.email}-Resume.pdf`; // File name
+    link.click();
+  };
 
   useEffect(() => {
     getProfile();
@@ -229,9 +296,44 @@ const ApplicantProfilePage = () => {
                 <Text>
                   <strong>Location:</strong> {profile?.aLocation}
                 </Text>
+                <Group>
+                  {profile?.aAbout && (
+                    <Button
+                      variant="light"
+                      color={!resumeState ? "blue" : "red"}
+                      onClick={() => setResumeState(!resumeState)}
+                      leftSection={!resumeState ? <IconEye /> : <IconEyeOff />}
+                    >
+                      {!resumeState ? "View Resume" : "Close Resume"}
+                    </Button>
+                  )}
+                  {profile?.aAbout && (
+                    <>
+                      <Button
+                        variant="light"
+                        leftSection={<IconFileDownload />}
+                        onClick={() => handleSaveResume()}
+                      >
+                        Save Resume
+                      </Button>
+                      <Button
+                        variant="light"
+                        leftSection={<IconDownload />}
+                        onClick={() => handleDownload()}
+                      >
+                        Download Resume
+                      </Button>
+                    </>
+                  )}
+                </Group>
               </Flex>
             </Flex>
           </div>
+          {resumeState && (
+            <PDFViewer className="w-full h-screen">
+              <MyDocument data={profile} />
+            </PDFViewer>
+          )}
         </div>
       </div>
     </>

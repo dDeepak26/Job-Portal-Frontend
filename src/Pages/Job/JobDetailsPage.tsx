@@ -14,7 +14,7 @@ import {
   Title,
 } from "@mantine/core";
 import { Briefcase, IndianRupee, MapPin, MoveLeft, Zap } from "lucide-react";
-import type { UserType } from "../../types/UserType";
+import type { applicantType } from "../../types/UserType";
 import {
   SESSION_KEY_TOKEN,
   SESSION_KEY_UPDATE_JOB,
@@ -32,10 +32,11 @@ const JobDetailsPage = () => {
 
   const [opened, { open, close }] = useDisclosure(false);
   const [jobDetails, setJobDetails] = useState<jobType>();
-  const [userData, setUserData] = useState<UserType>();
+  const [userData, setUserData] = useState<applicantType>();
   const [jobStatus, setJobStatus] = useState<
     "Applied" | "Rejected" | "Accepted"
   >();
+
   console.log("state data of job details ", jobDetails);
 
   // get user data from local storage
@@ -68,7 +69,7 @@ const JobDetailsPage = () => {
       .post(
         `http://localhost:8080/api/application/${jobDetails?._id}`,
         {
-          resumeUrl: values.resumeUrl,
+          resumeUrl: values.resumeUrl || userData?.resumeUrl,
         },
         {
           headers: {
@@ -119,6 +120,14 @@ const JobDetailsPage = () => {
     initialValues: {
       resumeUrl: null,
     },
+    validate: {
+      resumeUrl: (value) => {
+        if (!userData?.resumeUrl && !value) {
+          return "upload a resume to apply";
+        }
+        return null;
+      },
+    },
   });
 
   useEffect(() => {
@@ -143,7 +152,8 @@ const JobDetailsPage = () => {
           className="space-y-2"
         >
           <FileInput
-            withAsterisk
+            withAsterisk={!userData?.resumeUrl}
+            required={!userData?.resumeUrl ? true : false}
             label="Select Resume"
             placeholder="select resume"
             mb={"md"}

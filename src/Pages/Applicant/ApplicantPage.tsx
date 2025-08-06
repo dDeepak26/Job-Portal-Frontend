@@ -18,7 +18,6 @@ import { IconFilterEdit, IconX } from "@tabler/icons-react";
 const ApplicantPage = () => {
   const [jobs, setJobs] = useState<jobType[]>([]);
   const [filteredJobs, setFilteredJobs] = useState<jobType[]>([]);
-  const [buttonState, setButtonState] = useState<boolean>(true);
   console.log("job data of useState", jobs);
   console.log("filtered job data of useState", filteredJobs);
 
@@ -46,23 +45,6 @@ const ApplicantPage = () => {
   });
 
   // handle filter jobs
-  // function handleFilter(values: any) {
-  //   console.log("handle filter called with data", values);
-
-  //   const filterJobData = jobs.filter((data) => {
-  //     if (
-  //       values.salary &&
-  //       values.mode?.length == 0 &&
-  //       values.search?.length == 0
-  //     ) {
-  //       return data.jSalary <= values.salary;
-  //     } else if (values.salary && values.mode && values.search?.length === 0) {
-  //       return data.jMode === values.mode || data.jSalary <= values.salary;
-  //     }
-  //   });
-  //   setFilteredJobs(filterJobData);
-  //   console.log("filtered job data", filterJobData);
-  // }
   function handleFilter(values: any) {
     console.log("handle filter called with data", values);
 
@@ -82,7 +64,7 @@ const ApplicantPage = () => {
 
       const matchesMode = !values.mode || job.jMode === values.mode;
 
-      const matchesSalary = !values.salary || job.jSalary || 0 <= values.salary;
+      const matchesSalary = !values.salary || job.jSalary <= values.salary;
 
       return matchesSearch && matchesMode && matchesSalary;
     });
@@ -102,7 +84,6 @@ const ApplicantPage = () => {
       <form
         onSubmit={form.onSubmit((values) => {
           console.log(values);
-          setButtonState(false);
           handleFilter(values);
         })}
       >
@@ -126,7 +107,7 @@ const ApplicantPage = () => {
           {/* salary range */}
           <div>
             <Text size="md" mb="md" fw={500}>
-              Salary Range
+              Salary Range Upto
             </Text>
             <Slider
               defaultValue={10}
@@ -141,26 +122,21 @@ const ApplicantPage = () => {
           {/* apply filter button */}
         </Group>
         <div className="flex justify-end px-5">
-          {!buttonState && (
-            <Button
-              variant="light"
-              color="red"
-              onClick={() => {
-                getAllJobs();
-                form.reset();
-                setButtonState(true);
-              }}
-              mr={"md"}
-              leftSection={<IconX size={18} />}
-            >
-              Clear Filter
-            </Button>
-          )}
-          {buttonState && (
-            <Button type="submit" leftSection={<IconFilterEdit size={18} />}>
-              Apply Filter
-            </Button>
-          )}
+          <Button
+            variant="light"
+            color="red"
+            onClick={() => {
+              getAllJobs();
+              form.reset();
+            }}
+            mr={"md"}
+            leftSection={<IconX size={18} />}
+          >
+            Clear Filter
+          </Button>
+          <Button type="submit" leftSection={<IconFilterEdit size={18} />}>
+            Apply Filter
+          </Button>
         </div>
       </form>
       <SimpleGrid cols={4} p={"md"}>

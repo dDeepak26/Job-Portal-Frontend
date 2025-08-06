@@ -21,4 +21,5 @@ export type applicantType = {
   aSkills: string;
   createdAt?: string;
   updatedAt?: string;
+  resumeUrl?: string;
 };
