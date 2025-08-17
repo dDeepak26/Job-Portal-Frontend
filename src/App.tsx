@@ -14,6 +14,7 @@ import AppliedJobsPage from "./Pages/Applicant/AppliedJobsPage";
 import SavedJobsPages from "./Pages/Applicant/SavedJobsPages";
 import FindTalentPage from "./Pages/Employer/FindTalentPage";
 import EmpJobApplicantsPage from "./Pages/Employer/EmpJobApplicantsPage";
+import { ApplicantProtectRoutes, EmployerProtectRoutes } from "./ProtectRoutes";
 
 const App = () => {
   return (
@@ -28,28 +29,33 @@ const App = () => {
           <Route path="/register" element={<RegisterPage />} />
 
           {/* applicant routes */}
-          <Route path="/applicant" element={<ApplicantPage />} />
-          <Route path="/applicant-profile" element={<ApplicantProfilePage />} />
-          <Route path="/applied-jobs" element={<AppliedJobsPage />} />
-          <Route path="/saved-jobs" element={<SavedJobsPages />} />
+          <Route element={<ApplicantProtectRoutes />}>
+            <Route path="/applicant" element={<ApplicantPage />} />
+            <Route path="/applicant-profile" element={<ApplicantProfilePage />} />
+            <Route path="/applied-jobs" element={<AppliedJobsPage />} />
+            <Route path="/saved-jobs" element={<SavedJobsPages />} />
+          </Route>
 
           {/* employer routes */}
-          <Route path="/employer" element={<EmployerPage />} />
-          <Route
-            path="/employer/company-profile"
-            element={<EmpCompanyProfile />}
-          />
-          <Route path="/employer/find-talent" element={<FindTalentPage />} />
-          <Route
-            path="/employer/find-talent/applicants/:id"
-            element={<EmpJobApplicantsPage />}
-          />
+          <Route element={<EmployerProtectRoutes />}>
+            <Route path="/employer" element={<EmployerPage />} />
+            <Route
+              path="/employer/company-profile"
+              element={<EmpCompanyProfile />}
+            />
+            <Route path="/employer/find-talent" element={<FindTalentPage />} />
+            <Route
+              path="/employer/find-talent/applicants/:id"
+              element={<EmpJobApplicantsPage />}
+            />
+            {/* employer job routes */}
+            <Route path="/create-job" element={<CreateUpdateJobPage />} />
+            <Route path="/update-job" element={<CreateUpdateJobPage />} />
+          </Route>
 
           {/* jobs routes */}
           <Route path="/job-details/:id" element={<JobDetailsPage />} />
-          {/* employer job routes */}
-          <Route path="/create-job" element={<CreateUpdateJobPage />} />
-          <Route path="/update-job" element={<CreateUpdateJobPage />} />
+
 
           {/* no page */}
           <Route path="*" element={<NoPage />} />
